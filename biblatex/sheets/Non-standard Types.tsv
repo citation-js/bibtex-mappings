@@ -1,0 +1,14 @@
+artwork			Works of the visual arts such as paintings, sculpture, and installations.
+audio			Audio recordings, typically on audio \acr{CD}, \acr{DVD}, audio cassette, or similar media. See also \bibtype{music}.
+bibnote			This special entry type is not meant to be used in the \file{bib} file like other types. It is provided for third-party packages like \sty{notes2bib} which merge notes into the bibliography. The notes should go into the \bibfield{note} field. Be advised that the \bibtype{bibnote} type is not related to the \cmd{defbibnote} command in any way. \cmd{defbibnote} is for adding comments at the beginning or the end of the bibliography, whereas the \bibtype{bibnote} type is meant for packages which render endnotes as bibliography entries.
+commentary			Commentaries which have a status different from regular books, such as legal commentaries.
+image			Images, pictures, photographs, and similar media.
+jurisdiction			Court decisions, court recordings, and similar things.
+legislation			Laws, bills, legislative proposals, and similar things.
+legal			Legal documents such as treaties.
+letter			Personal correspondence such as letters, emails, memoranda, etc.
+movie			Motion pictures. See also \bibtype{video}.
+music			Musical recordings. This is a more specific variant of \bibtype{audio}.
+performance			Musical and theatrical performances as well as other works of the performing arts. This type refers to the event as opposed to a recording, a score, or a printed play.
+review			Reviews of some other work. This is a more specific variant of the \bibtype{article} type. The standard styles will treat this entry type as an alias for \bibtype{article}.
+standard			National and international standards issued by a standards body such as the International Organization for Standardization.

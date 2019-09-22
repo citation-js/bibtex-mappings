@@ -3,7 +3,7 @@ const path = require('path')
 
 async function main () {
   const docs = await fs.readFile(path.join(__dirname, '../biblatex/doc/latex/biblatex/biblatex.tex'), 'utf8')
-  const tables = parse(docs).slice(0, 4)
+  const tables = parse(docs).slice(0, -2)
 
   for (let { name, table } of tables) {
     await fs.writeFile(path.join(__dirname, `../sheets/${name}.tsv`), format(table))
@@ -14,10 +14,10 @@ main().catch(console.error)
 
 //============================================================================//
 
-const LIST = /\\subsubsection\{(?<name>(?:Regular Types|[\w-]+ Fields))\}.+?\\begin\{(?<type>field|type)list\}(?<list>.+?)\\end\{\k<type>list\}/gs
+const LIST = /\\subsubsection\{(?<name>(?!Data Types)[\w-]+ (Types|Fields|Aliases))\}.+?\\begin\{(?<type>field|type)list\}(?<list>.+?)\\end\{\k<type>list\}/gs
 const ITEM = {
     field: /\\(?<fieldType>field|list)item\{(?<key>.*?)\}\{(?<dataType>.*?)\}(?<description>.*?)(?=\n\n\\)/gs,
-    type: /\\typeitem\{(?<type>.*?)\}(?<description>.*?)\\reqitem\{(?<required>.*?)\}\n\\optitem\{(?<optional>.*?)\}|\\typeitem\{(?<type1>.*?)\}(?<description1>.*?)(?=\\typeitem)/gs,
+    type: /\\typeitem\{(?<type>.*?)\}(?<description>.*?)(?:\\reqitem\{(?<required>.*?)\}\n\\optitem\{(?<optional>.*?)\}|(?=\\typeitem|\\end))/gs
 }
 
 function parse (docs) {
