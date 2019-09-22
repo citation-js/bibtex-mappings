@@ -41,7 +41,7 @@ function formatDescription (text) {
   return text
     .trim()
     .replace(/\s+/g, ' ')
-    .replace(/"=/, '-')
+    .replace(/"=/g, '-')
 }
 
 function format (table) {
