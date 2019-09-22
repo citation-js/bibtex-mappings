@@ -1,3 +1,4 @@
+field	fieldType	dataType	description
 address	list	literal	An alias for \bibfield{location}, provided for \bibtex compatibility. Traditional \bibtex uses the slightly misleading field name \bibfield{address} for the place of publication, \ie the location of the publisher, while \biblatex uses the generic field name \bibfield{location}. See \secref{bib:fld:dat,bib:use:and}.
 annote	field	literal	An alias for \bibfield{annotation}, provided for \sty{jurabib} compatibility. See \secref{bib:fld:dat}.
 archiveprefix	field	literal	An alias for \bibfield{eprinttype}, provided for arXiv compatibility. See \secref{bib:fld:dat,use:use:epr}.

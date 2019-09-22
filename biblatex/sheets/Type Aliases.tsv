@@ -1,3 +1,4 @@
+type	required	optional	description
 conference			A legacy alias for \bibtype{inproceedings}.
 electronic			An alias for \bibtype{online}.
 mastersthesis			Similar to \bibtype{thesis} except that the \bibfield{type} field is optional and defaults to the localised term <Master's thesis>. You may still use the \bibfield{type} field to override that.

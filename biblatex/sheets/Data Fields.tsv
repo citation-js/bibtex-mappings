@@ -1,3 +1,4 @@
+field	fieldType	dataType	description
 abstract	field	literal	This field is intended for recording abstracts in a \file{bib} file, to be printed by a special bibliography style. It is not used by all standard bibliography styles.
 addendum	field	literal	Miscellaneous bibliographic data to be printed at the end of the entry. This is similar to the \bibfield{note} field except that it is printed at the end of the bibliography entry.
 afterword	list	name	The author(s) of an afterword to the work. If the author of the afterword is identical to the \bibfield{editor} and\slash or \bibfield{translator}, the standard styles will automatically concatenate these fields in the bibliography. See also \bibfield{introduction} and \bibfield{foreword}.

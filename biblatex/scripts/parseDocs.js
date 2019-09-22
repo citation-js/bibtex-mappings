@@ -19,6 +19,14 @@ const ITEM = {
   field: /\\(?<fieldType>field|list)item\{(?<key>.*?)\}\{(?<dataType>.*?)\}(?<description>.*?)(?=\n\n\\)/gs,
   type: /\\typeitem\{(?<type>.*?)\}(?<description>.*?)(?:\\reqitem\{(?<required>.*?)\}\n\\optitem\{(?<optional>.*?)\}|(?=\\typeitem|\\end))/gs
 }
+const HEADER = {
+  field: ['field', 'fieldType', 'dataType', 'description'],
+  type: ['type', 'required', 'optional', 'description']
+}
+const ROW = {
+  field (value) { return [value.key, value.fieldType, value.dataType, formatDescription(value.description)] },
+  type (value) { return [value.type, value.required, value.optional, formatDescription(value.description)] }
+}
 
 function parse (docs) {
   return Array.from(docs.matchAll(LIST))
@@ -29,12 +37,7 @@ function parse (docs) {
 }
 
 function toTable (type, list) {
-  return list.map(value => {
-    switch (type) {
-      case 'type': return [value.type || value.type1, value.required, value.optional, formatDescription(value.description || value.description1)]
-      case 'field': return [value.key, value.fieldType, value.dataType, formatDescription(value.description)]
-    }
-  })
+  return [HEADER[type], ...list.map(ROW[type])]
 }
 
 function formatDescription (text) {

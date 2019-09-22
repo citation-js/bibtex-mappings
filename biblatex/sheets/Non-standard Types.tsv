@@ -1,3 +1,4 @@
+type	required	optional	description
 artwork			Works of the visual arts such as paintings, sculpture, and installations.
 audio			Audio recordings, typically on audio \acr{CD}, \acr{DVD}, audio cassette, or similar media. See also \bibtype{music}.
 bibnote			This special entry type is not meant to be used in the \file{bib} file like other types. It is provided for third-party packages like \sty{notes2bib} which merge notes into the bibliography. The notes should go into the \bibfield{note} field. Be advised that the \bibtype{bibnote} type is not related to the \cmd{defbibnote} command in any way. \cmd{defbibnote} is for adding comments at the beginning or the end of the bibliography, whereas the \bibtype{bibnote} type is meant for packages which render endnotes as bibliography entries.
