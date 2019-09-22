@@ -1,0 +1,2 @@
+  - `scripts/parseDocs.js` -- generate data sheets from the biblatex manual
+  - `sheets/*.csv` -- data sheets

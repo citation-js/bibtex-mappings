@@ -1,0 +1,3 @@
+[submodule "biblatex/biblatex"]
+	path = biblatex/biblatex
+	url = https://github.com/plk/biblatex

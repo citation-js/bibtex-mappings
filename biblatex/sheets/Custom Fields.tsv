@@ -1,0 +1,4 @@
+name{[a--c]}	list	name	Custom lists for special bibliography styles. Not used by the standard bibliography styles.
+name{[a--c]}type	field	key	Similar to \bibfield{authortype} and \bibfield{editortype} but referring to the fields \bibfield{name{[a--c]}}. Not used by the standard bibliography styles.
+list{[a--f]}	list	literal	Custom lists for special bibliography styles. Not used by the standard bibliography styles.
+user{[a--f]}	field	literal	Custom fields for special bibliography styles. Not used by the standard bibliography styles.
