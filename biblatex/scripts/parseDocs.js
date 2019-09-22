@@ -16,25 +16,25 @@ main().catch(console.error)
 
 const LIST = /\\subsubsection\{(?<name>(?!Data Types)[\w-]+ (Types|Fields|Aliases))\}.+?\\begin\{(?<type>field|type)list\}(?<list>.+?)\\end\{\k<type>list\}/gs
 const ITEM = {
-    field: /\\(?<fieldType>field|list)item\{(?<key>.*?)\}\{(?<dataType>.*?)\}(?<description>.*?)(?=\n\n\\)/gs,
-    type: /\\typeitem\{(?<type>.*?)\}(?<description>.*?)(?:\\reqitem\{(?<required>.*?)\}\n\\optitem\{(?<optional>.*?)\}|(?=\\typeitem|\\end))/gs
+  field: /\\(?<fieldType>field|list)item\{(?<key>.*?)\}\{(?<dataType>.*?)\}(?<description>.*?)(?=\n\n\\)/gs,
+  type: /\\typeitem\{(?<type>.*?)\}(?<description>.*?)(?:\\reqitem\{(?<required>.*?)\}\n\\optitem\{(?<optional>.*?)\}|(?=\\typeitem|\\end))/gs
 }
 
 function parse (docs) {
-    return Array.from(docs.matchAll(LIST))
-        .map(({ groups: { name, list, type } }) => ({
-            name,
-            table: toTable(type, Array.from(list.matchAll(ITEM[type])).map(match => match.groups))
-        }))
+  return Array.from(docs.matchAll(LIST))
+    .map(({ groups: { name, list, type } }) => ({
+      name,
+      table: toTable(type, Array.from(list.matchAll(ITEM[type])).map(match => match.groups))
+    }))
 }
 
 function toTable (type, list) {
-    return list.map(value => {
-        switch (type) {
-            case 'type': return [value.type || value.type1, value.required, value.optional, formatDescription(value.description || value.description1)]
-            case 'field': return [value.key, value.fieldType, value.dataType, formatDescription(value.description)]
-        }
-    })
+  return list.map(value => {
+    switch (type) {
+      case 'type': return [value.type || value.type1, value.required, value.optional, formatDescription(value.description || value.description1)]
+      case 'field': return [value.key, value.fieldType, value.dataType, formatDescription(value.description)]
+    }
+  })
 }
 
 function formatDescription (text) {
@@ -45,5 +45,5 @@ function formatDescription (text) {
 }
 
 function format (table) {
-    return table.map(row => row.join('\t')).join('\n')
+  return table.map(row => row.join('\t')).join('\n')
 }
