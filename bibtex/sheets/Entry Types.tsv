@@ -1,0 +1,15 @@
+type	required	optional	description
+article	 author,  title,  journal,  year	 volume,  number,  pages,  month,  note	An article from a journal or magazine.
+book	 author or  editor,  title,  publisher,  year	 volume or  number,  series,  address,  edition,  month,  note	A book with an explicit publisher.
+booklet	 title	 author,  howpublished,  address,  month,  year,  note	A work that is printed and bound, but without a named publisher or sponsoring institution.
+conference			The same as {\tt INPROCEEDINGS}, included for {\em Scribe\/} compatibility.
+inbook	 author or  editor,  title,  chapter and/or  pages,  publisher,  year	 volume or  number,  series,  type,  address,  edition,  month,  note	A part of a book, which may be a chapter (or section or whatever) and/or a range of pages.
+incollection	 author,  title,  booktitle,  publisher,  year	 editor,  volume or  number,  series,  type,  chapter,  pages,  address,  edition,  month,  note	A part of a book having its own title.
+inproceedings	 author,  title,  booktitle,  year	 editor,  volume or  number,  series,  pages,  address,  month,  organization,  publisher,  note	An article in a conference proceedings.
+manual	 title	 author,  organization,  address,  edition,  month,  year,  note	Technical documentation.
+mastersthesis	 author,  title,  school,  year	 type,  address,  month,  note	A Master's thesis.
+misc	none	 author,  title,  howpublished,  month,  year,  note	Use this type when nothing else fits.
+phdthesis	 author,  title,  school,  year	 type,  address,  month,  note	A PhD thesis.
+proceedings	 title,  year	 editor,  volume or  number,  series,  address,  month,  organization,  publisher,  note	The proceedings of a conference.
+techreport	 author,  title,  institution,  year	 type,  number,  address,  month,  note	A report published by a school or other institution, usually numbered within a series.
+unpublished	 author,  title,  note	 month,  year	A document having an author and title, but not formally published.
