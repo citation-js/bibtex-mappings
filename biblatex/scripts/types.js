@@ -38,7 +38,7 @@ const requiredReverse = {}
 
 for (let biblatexType of biblatexTypes) {
   const resolved = resolveBiblatexType(biblatexType)
-  const cslType = getCslType(resolved)
+  const cslType = biblatex[resolved]
   if (!cslType) { continue }
   output.mappings.source[biblatexType] = cslType
 
@@ -53,19 +53,11 @@ for (let biblatexType of biblatexTypes) {
   output.requiredFields.types[biblatexType] = requiredReverse[required]
 }
 for (let alias in biblatexAliases) {
-  output.mappings.source[alias] = getCslType(resolveBiblatexType(biblatexAliases[alias]))
+  output.mappings.source[alias] = biblatex[resolveBiblatexType(biblatexAliases[alias])]
 }
 
 for (let cslType in csl) {
   output.mappings.target[cslType] = csl[cslType]
-}
-
-function getCslType (biblatexType) {
-  if (biblatexType in biblatex) {
-    return biblatex[biblatexType]
-  } else {
-    return undefined
-  }
 }
 
 function resolveBiblatexType (biblatexType) {
