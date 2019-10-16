@@ -1,0 +1,35 @@
+{
+  "values": [
+    "author, title, journaltitle, year/date",
+    "author, title, year/date",
+    "author, title, booktitle, year/date",
+    "author/editor, title, year/date",
+    "editor, title, year/date",
+    "author/editor, title, year/date, doi/eprint/url",
+    "author, title, number, year/date",
+    "title, year/date",
+    "author, title, type, institution, year/date"
+  ],
+  "types": {
+    "article": 0,
+    "book": 1,
+    "mvbook": 1,
+    "inbook": 2,
+    "booklet": 3,
+    "collection": 4,
+    "mvcollection": 4,
+    "incollection": 2,
+    "dataset": 3,
+    "online": 5,
+    "patent": 6,
+    "periodical": 4,
+    "proceedings": 7,
+    "mvproceedings": 7,
+    "inproceedings": 2,
+    "reference": 1,
+    "mvreference": 1,
+    "report": 8,
+    "thesis": 8,
+    "unpublished": 1
+  }
+}
