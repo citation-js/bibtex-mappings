@@ -1,0 +1,13 @@
+{
+  "article": "author, title, journal, year",
+  "book": "author/editor, title, publisher, year",
+  "booklet": "title",
+  "inbook": "author/editor, title, chapter/pages, publisher, year",
+  "incollection": "author, title, booktitle, publisher, year",
+  "inproceedings": "author, title, booktitle, year",
+  "mastersthesis": "author, title, school, year",
+  "phdthesis": "author, title, school, year",
+  "proceedings": "title, year",
+  "techreport": "author, title, institution, year",
+  "unpublished": "author, title, note"
+}

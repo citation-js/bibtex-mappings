@@ -1,0 +1,29 @@
+{
+  "bibtex": {
+    "article": "article",
+    "book": "book",
+    "booklet": "book",
+    "conference": "inproceedings",
+    "inbook": "chapter",
+    "incollection": "chapter",
+    "inproceedings": "inproceedings",
+    "mastersthesis": "thesis",
+    "phdthesis": "thesis",
+    "proceedings": "book",
+    "techreport": "report",
+    "unpublished": "manuscript"
+  },
+  "csl": {
+    "article": "article",
+    "article-journal": "article",
+    "article-magazine": "article",
+    "article-newspaper": "article",
+    "book": "book",
+    "chapter": "inbook",
+    "manuscript": "unpublished",
+    "paper-conference": "inproceedings",
+    "report": "techreport",
+    "review": "article",
+    "review-book": "article"
+  }
+}
