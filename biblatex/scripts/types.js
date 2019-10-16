@@ -45,7 +45,10 @@ for (let biblatexType of biblatexTypes) {
   const required = sheets[biblatexType].required || sheets[resolved].required
   if (!required) { continue }
   if (!(required in requiredReverse)) {
-    requiredReverse[required] = output.requiredFields.values.push(required) - 1
+    const parsedRequired = required
+      .split(', ')
+      .map(prop => prop.includes('/') ? prop.split('/') : prop)
+    requiredReverse[required] = output.requiredFields.values.push(parsedRequired) - 1
   }
   output.requiredFields.types[biblatexType] = requiredReverse[required]
 }

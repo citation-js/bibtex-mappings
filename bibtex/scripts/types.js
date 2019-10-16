@@ -27,11 +27,12 @@ for (let bibtexType of bibtexTypes) {
 
   const required = sheets[bibtexType].required
   if (!required) { continue }
-  const cleanRequired = required
+  const parsedRequired = required
     .trim()
-    .replace(/  +/g, ' ')
-    .replace(/ (and\/)?or /g, '/')
-  output.requiredFields[bibtexType] = cleanRequired
+    .replace(/ (and\/)?or  /g, '/')
+    .split(',  ')
+    .map(prop => prop.includes('/') ? prop.split('/') : prop)
+  output.requiredFields[bibtexType] = parsedRequired
 }
 
 for (let cslType in csl) {

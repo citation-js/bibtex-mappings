@@ -1,14 +1,92 @@
 {
   "values": [
-    "author, title, journaltitle, year/date",
-    "author, title, year/date",
-    "author, title, booktitle, year/date",
-    "author/editor, title, year/date",
-    "editor, title, year/date",
-    "author/editor, title, year/date, doi/eprint/url",
-    "author, title, number, year/date",
-    "title, year/date",
-    "author, title, type, institution, year/date"
+    [
+      "author",
+      "title",
+      "journaltitle",
+      [
+        "year",
+        "date"
+      ]
+    ],
+    [
+      "author",
+      "title",
+      [
+        "year",
+        "date"
+      ]
+    ],
+    [
+      "author",
+      "title",
+      "booktitle",
+      [
+        "year",
+        "date"
+      ]
+    ],
+    [
+      [
+        "author",
+        "editor"
+      ],
+      "title",
+      [
+        "year",
+        "date"
+      ]
+    ],
+    [
+      "editor",
+      "title",
+      [
+        "year",
+        "date"
+      ]
+    ],
+    [
+      [
+        "author",
+        "editor"
+      ],
+      "title",
+      [
+        "year",
+        "date"
+      ],
+      [
+        "doi",
+        "eprint",
+        "url"
+      ]
+    ],
+    [
+      "author",
+      "title",
+      "number",
+      [
+        "year",
+        "date"
+      ]
+    ],
+    [
+      "title",
+      [
+        "year",
+        "date"
+      ]
+    ],
+    [
+      "author",
+      "title",
+      "type",
+      "institution",
+      [
+        "year",
+        "date"
+      ]
+    ]
   ],
   "types": {
     "article": 0,
