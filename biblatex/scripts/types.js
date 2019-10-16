@@ -53,7 +53,7 @@ for (let biblatexType of biblatexTypes) {
   output.requiredFields.types[biblatexType] = requiredReverse[required]
 }
 for (let alias in biblatexAliases) {
-  output.mappings.target[alias] = getCslType(resolveBiblatexType(biblatexAliases[alias]))
+  output.mappings.source[alias] = getCslType(resolveBiblatexType(biblatexAliases[alias]))
 }
 
 for (let cslType in csl) {
