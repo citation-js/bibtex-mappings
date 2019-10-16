@@ -86,6 +86,15 @@
         "year",
         "date"
       ]
+    ],
+    [
+      "author",
+      "title",
+      "institution",
+      [
+        "year",
+        "date"
+      ]
     ]
   ],
   "types": {
@@ -109,8 +118,8 @@
     "unpublished": 1,
     "conference": 2,
     "electronic": 5,
-    "mastersthesis": 8,
-    "phdthesis": 8,
-    "techreport": 8
+    "mastersthesis": 9,
+    "phdthesis": 9,
+    "techreport": 9
   }
 }

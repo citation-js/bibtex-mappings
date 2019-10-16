@@ -42,7 +42,7 @@ for (let biblatexType of biblatexTypes) {
   if (!cslType) { continue }
   output.mappings.source[biblatexType] = cslType
 
-  const required = sheets[biblatexType] ? sheets[biblatexType].required : sheets[resolved].required
+  let required = getRequiredFields(biblatexType, resolved)
   if (!required) { continue }
   if (!(required in requiredReverse)) {
     const parsedRequired = required
@@ -66,6 +66,16 @@ function resolveBiblatexType (biblatexType) {
     return resolveBiblatexType('book')
   } else {
     return biblatexType
+  }
+}
+
+function getRequiredFields (type, resolved) {
+  if (type in sheets) {
+    return sheets[type].required
+  } else if (['mastersthesis', 'phdthesis', 'techreport'].includes(type) && sheets[resolved].required) {
+    return sheets[resolved].required.replace(/, type/, '')
+  } else {
+    return sheets[resolved].required
   }
 }
 
