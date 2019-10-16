@@ -104,10 +104,13 @@
     "proceedings": 7,
     "mvproceedings": 7,
     "inproceedings": 2,
-    "reference": 1,
-    "mvreference": 1,
     "report": 8,
     "thesis": 8,
-    "unpublished": 1
+    "unpublished": 1,
+    "conference": 2,
+    "electronic": 5,
+    "mastersthesis": 8,
+    "phdthesis": 8,
+    "techreport": 8
   }
 }

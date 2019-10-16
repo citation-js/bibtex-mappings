@@ -14,7 +14,6 @@ const sheets = [
     return map
   }, {})
 
-const biblatexTypes = Object.keys(sheets)
 const biblatexAliases = {
   conference: 'inproceedings',
   electronic: 'online',
@@ -22,6 +21,7 @@ const biblatexAliases = {
   phdthesis: 'thesis',
   techreport: 'report'
 }
+const biblatexTypes = Object.keys(sheets).concat(Object.keys(biblatexAliases))
 
 const output = {
   mappings: {
@@ -37,12 +37,12 @@ const output = {
 const requiredReverse = {}
 
 for (let biblatexType of biblatexTypes) {
-  const resolved = resolveBiblatexType(biblatexType)
+  const resolved = resolveBiblatexType(biblatexAliases[biblatexType] || biblatexType)
   const cslType = biblatex[resolved]
   if (!cslType) { continue }
   output.mappings.source[biblatexType] = cslType
 
-  const required = sheets[biblatexType].required || sheets[resolved].required
+  const required = sheets[biblatexType] ? sheets[biblatexType].required : sheets[resolved].required
   if (!required) { continue }
   if (!(required in requiredReverse)) {
     const parsedRequired = required
@@ -51,9 +51,6 @@ for (let biblatexType of biblatexTypes) {
     requiredReverse[required] = output.requiredFields.values.push(parsedRequired) - 1
   }
   output.requiredFields.types[biblatexType] = requiredReverse[required]
-}
-for (let alias in biblatexAliases) {
-  output.mappings.source[alias] = biblatex[resolveBiblatexType(biblatexAliases[alias])]
 }
 
 for (let cslType in csl) {
