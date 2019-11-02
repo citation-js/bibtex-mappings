@@ -33,11 +33,13 @@
     "movie": "motion_picture",
     "music": "musical_score",
     "review": "review",
+    "video": "motion_picture",
     "conference": "paper-conference",
     "electronic": "webpage",
     "mastersthesis": "thesis",
     "phdthesis": "thesis",
-    "techreport": "report"
+    "techreport": "report",
+    "www": "webpage"
   },
   "target": {
     "article": "article",

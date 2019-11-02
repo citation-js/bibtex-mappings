@@ -19,7 +19,8 @@ const biblatexAliases = {
   electronic: 'online',
   mastersthesis: 'thesis',
   phdthesis: 'thesis',
-  techreport: 'report'
+  techreport: 'report',
+  www: 'online'
 }
 const biblatexTypes = Object.keys(sheets).concat(Object.keys(biblatexAliases))
 

@@ -13,3 +13,4 @@ music			Musical recordings. This is a more specific variant of \bibtype{audio}.
 performance			Musical and theatrical performances as well as other works of the performing arts. This type refers to the event as opposed to a recording, a score, or a printed play.
 review			Reviews of some other work. This is a more specific variant of the \bibtype{article} type. The standard styles will treat this entry type as an alias for \bibtype{article}.
 standard			National and international standards issued by a standards body such as the International Organization for Standardization.
+video			Audiovisual recordings, typically on \acr{DVD}, \acr{VHS} cassette, or similar media. See also \bibtype{movie}.

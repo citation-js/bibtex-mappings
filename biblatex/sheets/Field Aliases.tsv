@@ -6,3 +6,4 @@ journal	field	literal	An alias for \bibfield{journaltitle}, provided for \bibtex
 key	field	literal	An alias for \bibfield{sortkey}, provided for \bibtex compatibility. See \secref{bib:fld:spc}.
 pdf	field	verbatim	An alias for \bibfield{file}, provided for JabRef compatibility. See \secref{bib:fld:dat}.
 primaryclass	field	literal	An alias for \bibfield{eprintclass}, provided for arXiv compatibility. See \secref{bib:fld:dat,use:use:epr}.
+school	list	literal	An alias for \bibfield{institution}, provided for \bibtex compatibility. The \bibfield{institution} field is used by traditional \bibtex for technical reports whereas the \bibfield{school} field holds the institution associated with theses. The \biblatex package employs the generic field name \bibfield{institution} in both cases. See \secref{bib:fld:dat,bib:use:and}.

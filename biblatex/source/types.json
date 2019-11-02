@@ -26,7 +26,8 @@
     "letter": "personal_communication",
     "movie": "motion_picture",
     "music": "musical_score",
-    "review": "review"
+    "review": "review",
+    "video": "motion_picture"
   },
   "csl": {
     "article": "article",

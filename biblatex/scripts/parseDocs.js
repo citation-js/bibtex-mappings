@@ -16,8 +16,8 @@ main().catch(console.error)
 
 const LIST = /\\subsubsection\{(?<name>(?!Data Types)[\w-]+ (Types|Fields|Aliases))\}.+?\\begin\{(?<type>field|type)list\}(?<list>.+?)\\end\{\k<type>list\}/gs
 const ITEM = {
-  field: /\\(?<fieldType>field|list)item\{(?<key>.*?)\}\{(?<dataType>.*?)\}(?<description>.*?)(?=\n\n\\)/gs,
-  type: /\\typeitem\{(?<type>.*?)\}(?<description>.*?)(?:\\reqitem\{(?<required>.*?)\}\n\\optitem\{(?<optional>.*?)\}|(?=\\typeitem|\\end))/gs
+  field: /\\(?<fieldType>field|list)item\{(?<key>.*?)\}\{(?<dataType>.*?)\}(?<description>.*?)(?=\n\n(\\|$))/gs,
+  type: /\\typeitem\{(?<type>.*?)\}(?<description>.*?)(?:\\reqitem\{(?<required>.*?)\}\n\\optitem\{(?<optional>.*?)\}|(?=\\typeitem|$))/gs
 }
 const HEADER = {
   field: ['field', 'fieldType', 'dataType', 'description'],

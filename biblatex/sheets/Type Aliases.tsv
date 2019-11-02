@@ -4,3 +4,4 @@ electronic			An alias for \bibtype{online}.
 mastersthesis			Similar to \bibtype{thesis} except that the \bibfield{type} field is optional and defaults to the localised term <Master's thesis>. You may still use the \bibfield{type} field to override that.
 phdthesis			Similar to \bibtype{thesis} except that the \bibfield{type} field is optional and defaults to the localised term <PhD thesis>. You may still use the \bibfield{type} field to override that.
 techreport			Similar to \bibtype{report} except that the \bibfield{type} field is optional and defaults to the localised term <technical report>. You may still use the \bibfield{type} field to override that.
+www			An alias for \bibtype{online}, provided for \sty{jurabib} compatibility.
