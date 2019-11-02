@@ -16,8 +16,8 @@ main().catch(console.error)
 
 const LIST = /\\subsection\{(?<type>(?<name>Entry Types|Fields))\}((?!\\subsection).)+\\begin\{description\}(?<list>.+?)\\end\{description\}/gs
 const ITEM = {
-  'Fields': /\\item\[(?<key>.*?)\\hfill\](?<description>.*?)(?=\n\n\\)/gs,
-  'Entry Types': /\\item\[(?<type>.*?)\\hfill\](?<description>.*?)(?:Required fields?: (?<required>.*?)\.\nOptional fields?: (?<optional>.*?)\.|(?=\n\n\\))/gs
+  'Fields': /\\item\[(?<key>.*?)\\hfill\](?<description>.*?)(?=\n\n(\\|$))/gs,
+  'Entry Types': /\\item\[(?<type>.*?)\\hfill\](?<description>.*?)(?:Required fields?: (?<required>.*?)\.\nOptional fields?: (?<optional>.*?)\.|(?=\n\n(\\|$)))/gs
 }
 const HEADER = {
   'Fields': ['field', 'description'],
