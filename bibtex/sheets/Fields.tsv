@@ -22,3 +22,4 @@ series	The name of a series or set of books. When citing an entire book, the the
 title	The work's title, typed as explained in the \LaTeX\ book.
 type	The type of a technical report---for example, ``Research Note''$\!$.
 volume	The volume of a journal or multivolume book.
+year	The year of publication or, for an unpublished work, the year it was written. Generally it should consist of four numerals, such as {\tt 1984}, although the standard styles can handle any {\tt year} whose last four nonpunctuation characters are numerals, such as `\hbox{(about 1984)}'$\!$.
