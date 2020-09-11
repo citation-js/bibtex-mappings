@@ -92,7 +92,7 @@ for (let field of Object.values(info)) {
 }
 
 const file = Object.fromEntries(Object.values(info).map(({ field, fieldType, dataType }) => {
-  return [field, fieldType === 'field' ? dataType : fieldType]
+  return [field, [fieldType, dataType]]
 }))
 
 fs.writeFileSync(__dirname + '/../output/fieldTypes.json', JSON.stringify(file, null, 2))

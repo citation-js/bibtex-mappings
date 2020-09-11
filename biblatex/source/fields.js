@@ -526,7 +526,7 @@ module.exports = [
         publisher: false
       },
       target: {
-        type: 'webpage'
+        type: 'webpage' // TODO paper-conference?
       }
     }
   },
