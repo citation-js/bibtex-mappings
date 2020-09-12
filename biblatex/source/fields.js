@@ -1,3 +1,5 @@
+const types = require('./types')
+
 // References to sections point to, unless stated otherwise, sections in
 // version 3.13 of the biblatex package documentation, available at
 // http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf
@@ -31,6 +33,18 @@ const MONTHS = {
   october: 10,
   november: 11,
   december: 12
+}
+
+const TYPE_KEYS = {
+  bathesis: 'Bachelor\'s thesis',
+  mathesis: 'Master\'s thesis',
+  phdthesis: 'PhD thesis',
+  candthesis: 'Candidate thesis',
+  techreport: 'technical report',
+  resreport: 'research report',
+  software: 'computer software',
+  datacd: 'data cd',
+  audiocd: 'audio cd'
 }
 
 // isan: /^(?:ISAN )?(?:[0-9a-f]{4}-){4}[0-9a-z](?:-(?:[0-9a-f]{4}-){2}[0-9a-z])?$/i
@@ -127,23 +141,32 @@ const Converters = {
       return [id, 'pubmed']
     }
   },
+  // (Unconvential) convention of setting
+  //     howpublished = {\url{https://example.org/some/page}}
+  HOW_PUBLISHED: {
+    toTarget (howPublished) {
+      if (howPublished.startsWith('url')) {
+        return howPublished.slice(3)
+      }
+    }
+  },
+  // Unfortunately, keywords lists are serialised the same in BibTeX and CSL-JSON,
+  // meaning we deserialize them here again.
   KEYWORDS: {
     toTarget (list) { return list.join(',') },
     toSource (list) { return list.split(',') }
   },
+  // Simply translating name parts; deserialisation happens in the parser.
   NAMES: {
     toTarget (list) { return list.map(parseName) },
     toSource (list) { return list.map(formatName) }
   },
+  // TODO: multiple ranges
   PAGES: {
     toTarget (text) { return text.replace(/-+/, '-') },
     toSource (text) { return text.replace('-', '--') }
   },
-  RICH_TEXT: {
-    toTarget (tex) {
-
-    }
-  },
+  RICH_TEXT: null, // Currently conversions take place in the parser.
   STANDARD_NUMBERS: {
     toTarget (...args) {
       return args.find(Boolean)
@@ -153,14 +176,34 @@ const Converters = {
       return match ? match.slice(1, 5) : undefined
     }
   },
+  // See section 4.9.2.11
   STATUS: {
-
+    toSource (state) {
+      if (/^(inpreparation|submitted|forthcoming|inpress|prepublished)$/i.test(state)) {
+        return state
+      }
+    }
   },
   TYPE: {
+    toTarget (type, subtype, typeKey) {
+      if (!typeKey) {
+        if (type === 'masterthesis') {
+          typeKey = 'mathesis'
+        }
+        if (type === 'phdthesis') {
+          typeKey = 'phdthesis'
+        }
+        if (type === 'techreport') {
+          typeKey = 'techreport'
+        }
+      }
 
-  },
-  URL: {
-
+      return [types.biblatex[type] || 'book', typeKey || subtype]
+    },
+    toSource (type, genre) {
+      const sourceType = types.csl[type] || 'misc'
+      return genre in TYPE_KEYS ? [sourceType, , genre] : [sourceType, genre]
+    }
   }
 }
 
@@ -421,7 +464,7 @@ module.exports = [
   },
   {
     source: [TYPE, 'entrysubtype', 'type'],
-    target: 'genre',
+    target: ['type', 'genre'],
     convert: Converters.TYPE
   },
   {
@@ -616,9 +659,19 @@ module.exports = [
     convert: Converters.NAMES
   },
   {
-    source: ['url', 'howpublished'],
+    source: 'url',
+    target: 'URL'
+  },
+  {
+    source: 'howpublished',
     target: 'URL',
-    convert: Converters.URL
+    convert: Converters.HOW_PUBLISHED,
+    when: {
+      source: {
+        url: false
+      },
+      target: false
+    }
   },
   {
     source: 'version',
