@@ -44,6 +44,23 @@ for (const name of sheetNames) {
   }
 }
 
+// Custom
+info.numpages = {
+  field: 'numpages',
+  fieldType: 'field',
+  dataType: 'integer'
+}
+info.pmid = {
+  field: 'pmid',
+  fieldType: 'field',
+  dataType: 'literal'
+}
+info.pmcid = {
+  field: 'pmcid',
+  fieldType: 'field',
+  dataType: 'literal'
+}
+
 function parseType (fieldType, dataType) {
   if (dataType.startsWith('Pattern')) {
     return [fieldType, 'gender']

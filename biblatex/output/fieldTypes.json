@@ -582,5 +582,17 @@
   "school": [
     "list",
     "literal"
+  ],
+  "numpages": [
+    "field",
+    "integer"
+  ],
+  "pmid": [
+    "field",
+    "literal"
+  ],
+  "pmcid": [
+    "field",
+    "literal"
   ]
 }

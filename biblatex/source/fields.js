@@ -127,6 +127,10 @@ const Converters = {
       return [id, 'pubmed']
     }
   },
+  KEYWORDS: {
+    toTarget (list) { return list.join(',') },
+    toSource (list) { return list.split(',') }
+  },
   NAMES: {
     toTarget (list) { return list.map(parseName) },
     toSource (list) { return list.map(formatName) }
@@ -202,6 +206,7 @@ const aliases = [
   {
     source: 'address',
     target: 'publisher-place',
+    convert: Converters.PICK,
     when: {
       source: { location: false },
       target: false
@@ -232,6 +237,7 @@ const aliases = [
   {
     source: 'school',
     target: 'publisher',
+    convert: Converters.PICK,
     when: {
       source: {
         institution: false,
@@ -482,11 +488,13 @@ module.exports = [
   },
   {
     source: 'keywords',
-    target: 'keyword'
+    target: 'keyword',
+    convert: Converters.KEYWORDS
   },
   {
     source: 'language',
-    target: 'language'
+    target: 'language',
+    convert: Converters.PICK
   },
   {
     source: 'note',
@@ -515,11 +523,13 @@ module.exports = [
   },
   {
     source: 'origlocation',
-    target: 'original-publisher-place'
+    target: 'original-publisher-place',
+    convert: Converters.PICK
   },
   {
     source: 'origpublisher',
-    target: 'original-publisher'
+    target: 'original-publisher',
+    convert: Converters.PICK
   },
   {
     source: 'origtitle',
@@ -546,11 +556,13 @@ module.exports = [
   },
   {
     source: 'location',
-    target: 'publisher-place'
+    target: 'publisher-place',
+    convert: Converters.PICK
   },
   {
     source: 'publisher',
     target: 'publisher',
+    convert: Converters.PICK,
     when: {
       source: true,
       target: {
@@ -561,6 +573,7 @@ module.exports = [
   {
     source: 'organization',
     target: 'publisher',
+    convert: Converters.PICK,
     when: {
       source: {
         publisher: false
@@ -573,6 +586,7 @@ module.exports = [
   {
     source: 'institution',
     target: 'publisher',
+    convert: Converters.PICK,
     when: {
       source: {
         publisher: false,
