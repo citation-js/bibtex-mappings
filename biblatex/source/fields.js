@@ -2,18 +2,89 @@
 // version 3.13 of the biblatex package documentation, available at
 // http://mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf
 
-function parseDate (date) {
-  return date.split('T')[0].split('-').map(Number)
-}
-
 const TYPE = Symbol('BibTeX type')
 const LABEL = Symbol('BibTeX label')
+
+const MONTHS = {
+  jan: 1,
+  feb: 2,
+  mar: 3,
+  apr: 4,
+  may: 5,
+  jun: 6,
+  jul: 7,
+  aug: 8,
+  sep: 9,
+  oct: 10,
+  nov: 11,
+  dec: 12,
+
+  january: 1,
+  february: 2,
+  march: 3,
+  april: 4,
+  may: 5,
+  june: 6,
+  july: 7,
+  august: 8,
+  september: 9,
+  october: 10,
+  november: 11,
+  december: 12
+}
 
 // isan: /^(?:ISAN )?(?:[0-9a-f]{4}-){4}[0-9a-z](?:-(?:[0-9a-f]{4}-){2}[0-9a-z])?$/i
 // ismn: /^(?:979-?0-?|M-?)(?:\d{9}|(?=[\d-]{11}$)\d+-\d+-\d)$/i
 // isrn: /^ISRN .{1,36}$/
 // iswc: /^(?:ISWC )?T-?\d{9}-?\d$/
 const STANDARD_NUMBERS_PATTERN = /(^(?:ISAN )?(?:[0-9a-f]{4}-){4}[0-9a-z](?:-(?:[0-9a-f]{4}-){2}[0-9a-z])?$)|(^(?:979-?0-?|M-?)(?:\d{9}|(?=[\d-]{11}$)\d+-\d+-\d)$)|(^ISRN .{1,36}$)|(^(?:ISWC )?T-?\d{9}-?\d$)/i
+
+// Basic EDTF Level 1 parser, except seasons since season ranges are not supported
+// in the version of CSL-JSON that Citation.js supports...
+function parseDate (date) {
+  const parts = date.split('T')[0].replace(/[?~%]$/, '').split('-')
+  const year = +parts[0].replace(/^Y(?=-?\d{4}\d+)/, '').replace(/X/g, '0')
+
+  // empty parts and 'XX' return NaN, which is falsy
+  const month = +parts[1]
+  const day = +parts[2]
+
+  // filter out months > 20 (seasons)
+  if (!month || month > 20) {
+    return [year]
+  } else if (!day) {
+    return [year, month]
+  } else {
+    return [year, month, day]
+  }
+}
+
+// Parse "April 1st", "24th December", "1 jan" since Oren Patashnik recommends
+// people put the day number in the month field. To be fair, that *was* way back
+// in February 8, 1988.
+//
+// See point 9 of section 4 of the BibTeX manual v0.99b
+// http://mirrors.ctan.org/biblio/bibtex/base/btxdoc.pdf (accessed 2020-09-12)
+function parseMonth (value) {
+  value = value.trim().toLowerCase()
+  if (value in MONTHS) {
+    return [MONTHS[value]]
+  }
+
+  const parts = value.split(/\s+/)
+  let month
+  let day
+
+  if (parts[0] in MONTHS) {
+    month = MONTHS[parts[0]]
+    day = parseInt(parts[1])
+  } else if (parts[1] in MONTHS) {
+    month = MONTHS[parts[1]]
+    day = parseInt(parts[0])
+  }
+
+  return day ? [month, day] : month ? [month] : []
+}
 
 const Converters = {
   PICK: {
@@ -31,7 +102,7 @@ const Converters = {
       return {
         'date-parts': date
           .split('/')
-          .map(part => part ? parseDate(part) : undefined)
+          .map(part => part && part !== '..' ? parseDate(part) : undefined)
       }
     },
     toSource (date) {
@@ -42,7 +113,7 @@ const Converters = {
   },
   YEAR_MONTH: {
     toTarget (year, month) {
-      return { 'date-parts': [[year, month]] }
+      return { 'date-parts': [[year, ...parseMonth(month)]] }
     }
   },
   // See section 3.13.7
@@ -56,42 +127,12 @@ const Converters = {
       return [id, 'pubmed']
     }
   },
-  KEYWORDS: {
-    toTarget (list) { return Converters.LIST.toTarget(list).join(',') },
-    toSource (list) { return Converters.LIST.toSource(list.split(',')) }
-  },
-  LIST: {
-    toTarget (text) {
-      text = text.replace(/ and others$/, '')
-      const list = []
-      let delimEnd = 0
-      let braceLevel = 0
-
-      for (let i = 0; i < text.length; i++) {
-        if (braceLevel === 0 && text.slice(i, i + 5) === ' and ') {
-          list.push(text.slice(delimEnd, i))
-          delimEnd = i + 5
-        } else if (text[0] === '{') {
-          braceLevel++
-        } else if (text[0] === '}') {
-          braceLevel--
-        }
-      }
-
-      return list
-    },
-    toSource (list) {
-      return list
-        .map(item => item.includes(' and ') ? `{${item}}` : item )
-        .join(' and ')
-    }
-  },
   NAMES: {
-    toTarget (list) { return Converters.LIST.toTarget(list).map(parseName) },
-    toSource (list) { return Converters.LIST.toSource(list.map(formatName)) }
+    toTarget (list) { return list.map(parseName) },
+    toSource (list) { return list.map(formatName) }
   },
   PAGES: {
-    toTarget (text) { return text.replace('--', '-') },
+    toTarget (text) { return text.replace(/-+/, '-') },
     toSource (text) { return text.replace('-', '--') }
   },
   RICH_TEXT: {
@@ -441,8 +482,7 @@ module.exports = [
   },
   {
     source: 'keywords',
-    target: 'keyword',
-    convert: Converters.LIST
+    target: 'keyword'
   },
   {
     source: 'language',
