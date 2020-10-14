@@ -41,7 +41,7 @@
   ],
   "booktitle": [
     "field",
-    "literal"
+    "title"
   ],
   "booktitleaddon": [
     "field",
@@ -125,7 +125,7 @@
   ],
   "eventtitle": [
     "field",
-    "literal"
+    "title"
   ],
   "eventtitleaddon": [
     "field",
@@ -225,7 +225,7 @@
   ],
   "maintitle": [
     "field",
-    "literal"
+    "title"
   ],
   "maintitleaddon": [
     "field",
@@ -269,7 +269,7 @@
   ],
   "origtitle": [
     "field",
-    "literal"
+    "title"
   ],
   "pages": [
     "field",
@@ -301,7 +301,7 @@
   ],
   "series": [
     "field",
-    "literal"
+    "title"
   ],
   "shortauthor": [
     "list",
@@ -329,7 +329,7 @@
   ],
   "shorttitle": [
     "field",
-    "literal"
+    "title"
   ],
   "subtitle": [
     "field",
@@ -337,7 +337,7 @@
   ],
   "title": [
     "field",
-    "literal"
+    "title"
   ],
   "titleaddon": [
     "field",
@@ -349,7 +349,7 @@
   ],
   "type": [
     "field",
-    "key"
+    "title"
   ],
   "url": [
     "field",

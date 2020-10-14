@@ -9,6 +9,19 @@ const sheetNames = [
   'Field Aliases'
 ]
 
+// Adapted from retorquere/bibtex-parser (accessed 2020-10-14)
+// https://github.com/retorquere/bibtex-parser/blob/0c8bd92/index.ts#L274-L283
+const titleFields = [
+  'title',
+  'series',
+  'shorttitle',
+  'booktitle',
+  'type',
+  'origtitle',
+  'maintitle',
+  'eventtitle'
+]
+
 const info = {}
 const charRangePattern = /\{\[(.)--(.)]}/
 const chars = ['a', 'b', 'c', 'd', 'e', 'f']
@@ -32,6 +45,10 @@ for (const name of sheetNames) {
     }
 
     [fieldType, dataType] = parseType(fieldType, dataType)
+
+    if (titleFields.includes(field)) {
+      dataType = 'title'
+    }
 
     for (const field of fields) {
       info[field] = {
