@@ -35,6 +35,7 @@ const MONTHS = {
   december: 12
 }
 
+// See section 4.9.2.13
 const TYPE_KEYS = {
   bathesis: 'Bachelor\'s thesis',
   mathesis: 'Master\'s thesis',
@@ -80,6 +81,14 @@ function parseDate (date) {
 // See point 9 of section 4 of the BibTeX manual v0.99b
 // http://mirrors.ctan.org/biblio/bibtex/base/btxdoc.pdf (accessed 2020-09-12)
 function parseMonth (value) {
+  if (value == null) {
+    return []
+  }
+
+  if (parseInt(value, 10)) {
+    return [parseInt(value, 10)]
+  }
+
   value = value.trim().toLowerCase()
   if (value in MONTHS) {
     return [MONTHS[value]]
@@ -100,6 +109,13 @@ function parseMonth (value) {
   return day ? [month, day] : month ? [month] : []
 }
 
+const name = new util.Translator([
+  { source: 'given', target: 'given' },
+  { source: 'family', target: 'family' },
+  { source: 'suffix', target: 'suffix' },
+  { source: 'prefix', target: 'non-dropping-particle' },
+])
+
 const Converters = {
   PICK: {
     toTarget (...args) {
@@ -113,11 +129,10 @@ const Converters = {
   // See section 2.3.8
   DATE: {
     toTarget (date) {
-      return {
-        'date-parts': date
+      const parts = date
           .split('/')
           .map(part => part && part !== '..' ? parseDate(part) : undefined)
-      }
+      return isNaN(parts[0][0]) ? { literal: date } : { 'date-parts': parts }
     },
     toSource (date) {
       if ('date-parts' in date) {
@@ -127,7 +142,11 @@ const Converters = {
   },
   YEAR_MONTH: {
     toTarget (year, month) {
-      return { 'date-parts': [[year, ...parseMonth(month)]] }
+      if (isNaN(+year)) {
+        return { literal: year }
+      } else {
+        return { 'date-parts': [[+year, ...parseMonth(month)]] }
+      }
     }
   },
   // See section 3.13.7
@@ -158,12 +177,12 @@ const Converters = {
   },
   // Simply translating name parts; deserialisation happens in the parser.
   NAMES: {
-    toTarget (list) { return list.map(parseName) },
-    toSource (list) { return list.map(formatName) }
+    toTarget (list) { return list.map(name.convertToTarget) },
+    toSource (list) { return list.map(name.convertToSource) }
   },
   // TODO: multiple ranges
   PAGES: {
-    toTarget (text) { return text.replace(/-+/, '-') },
+    toTarget (text) { return text.replace(/[–—]/, '-') },
     toSource (text) { return text.replace('-', '--') }
   },
   RICH_TEXT: null, // Currently conversions take place in the parser.
@@ -198,10 +217,10 @@ const Converters = {
         }
       }
 
-      return [types.biblatex[type] || 'book', typeKey || subtype]
+      return [types.source[type] || 'book', typeKey || subtype]
     },
     toSource (type, genre) {
-      const sourceType = types.csl[type] || 'misc'
+      const sourceType = types.target[type] || 'misc'
       return genre in TYPE_KEYS ? [sourceType, , genre] : [sourceType, genre]
     }
   }
@@ -292,7 +311,7 @@ const aliases = [
   }
 ]
 
-module.exports = [
+const biblatex = new util.Translator([
   ...aliases,
   ...nonSpec,
   {
@@ -400,6 +419,7 @@ module.exports = [
           'suppcollection',
           'manual',
           'suppperiodical',
+          'proceedings',
           'mvproceedings',
           'refererence'
         ]
@@ -427,7 +447,6 @@ module.exports = [
           'post',
           'post-weblog',
           'personal_communication',
-          'report',
           'review',
           'review-book',
           'song',
@@ -479,6 +498,14 @@ module.exports = [
   {
     source: 'eventtitle',
     target: 'event'
+  },
+  {
+    source: LABEL,
+    target: ['id', 'citation-label'],
+    convert: {
+      toTarget (value) { return [value, value] },
+      toSource (id, label) { return id || label }
+    }
   },
   {
     source: 'isbn',
@@ -560,8 +587,8 @@ module.exports = [
     source: 'number',
     target: 'number',
     when: {
-      source: { [TYPE]: 'patent' },
-      target: { type: 'patent' }
+      source: { [TYPE]: ['patent', 'report', 'techreport'] },
+      target: { type: ['patent', 'report'] }
     }
   },
   {
@@ -639,6 +666,21 @@ module.exports = [
     }
   },
   {
+    source: 'howpublished',
+    target: 'publisher',
+    convert: Converters.PICK,
+    when: {
+      source: {
+        publisher: false,
+        organization: false,
+        institution: false
+      },
+      target: {
+        type: 'manuscript'
+      }
+    }
+  },
+  {
     source: 'pubstate',
     target: 'status',
     convert: Converters.STATUS
@@ -690,4 +732,38 @@ module.exports = [
   //   target: 'volume-title',
   //   convert: Converters.RICH_TEXT
   // }
-]
+])
+
+function crossref (entry, registry) {
+  if (entry.crossref in registry) {
+    const parent = registry[entry.crossref].properties
+    if (parent === entry) {
+      return entry
+    }
+
+    return Object.assign(crossref(parent, registry), entry)
+  }
+
+  return entry
+}
+
+export function parse (input) {
+  const registry = {}
+
+  for (const entry of input) {
+    registry[entry.label] = entry
+  }
+
+  return input.map(({ type, label, properties }) => biblatex.convertToTarget({
+    [TYPE]: type,
+    [LABEL]: label,
+    ...crossref(properties, registry)
+  }))
+}
+
+export function format (input) {
+  return input.map(entry => {
+    const { [TYPE]: type, [LABEL]: label, ...properties } = biblatex.convertToSource(entry)
+    return { type, label, properties }
+  })
+}
