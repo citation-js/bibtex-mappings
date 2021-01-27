@@ -16,7 +16,7 @@ const titleFields = [
   'series',
   'shorttitle',
   'booktitle',
-  'type',
+  // 'type',
   'origtitle',
   'maintitle',
   'eventtitle'
