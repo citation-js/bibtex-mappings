@@ -138,6 +138,19 @@ const Converters = {
 
 const bibtex = new util.Translator([
   {
+    source: 'note',
+    target: 'accessed',
+    when: {
+      source: false,
+      target: { note: false }
+    },
+    convert: {
+      toSource (accessed) {
+        return `[Online; accessed ${formatDate(accessed)}]`
+      }
+    }
+  },
+  {
     source: 'annote',
     target: 'annote'
   },
@@ -218,7 +231,7 @@ const bibtex = new util.Translator([
     target: 'container-title',
     when: {
       target: {
-        type: ['chapter']
+        type: ['chapter', 'paper-conference']
       }
     }
   },
@@ -249,20 +262,9 @@ const bibtex = new util.Translator([
     convert: Converters.NAMES
   },
   {
-    source: 'type',
-    target: 'genre',
-    when: {
-      source: { [TYPE]: 'techreport' },
-      target: { type: 'report' }
-    }
-  },
-  {
     source: LABEL,
-    target: ['id', 'citation-label'],
-    convert: {
-      toTarget (value) { return [value, value] },
-      toSource (id, label) { return id || label }
-    }
+    target: ['id', 'citation-label', 'author', 'issued', 'year-suffix', 'title'],
+    convert: Converters.LABEL
   },
   {
     source: 'number',
@@ -273,7 +275,8 @@ const bibtex = new util.Translator([
       },
       target: {
         issue (issue) {
-          return typeof issue === 'number' || issue.match(/\d+/)
+          return typeof issue === 'number' ||
+            (typeof issue === 'string' && issue.match(/\d+/))
         },
         type: [
           'article',
@@ -415,9 +418,43 @@ const bibtex = new util.Translator([
     target: 'title'
   },
   {
-    source: TYPE,
+    source: [TYPE, 'type'],
     target: ['type', 'genre'],
-    convert: Converters.TYPE
+    convert: {
+      toTarget (sourceType, subType) {
+        const type = types.source[sourceType] || 'book'
+
+        if (subType) {
+          return [type, subType]
+        } else if (sourceType === 'mastersthesis') {
+          return [type, 'Master\'s thesis']
+        } else if (sourceType === 'phdthesis') {
+          return [type, 'PhD thesis']
+        } else {
+          return [type]
+        }
+      },
+      toSource (targetType, genre) {
+        const type = types.target[targetType] || 'misc'
+
+        if (/^(master'?s|diploma) thesis$/i.test(genre)) {
+          return ['mastersthesis']
+        } else if (/^(phd|doctoral) thesis$/i.test(genre)) {
+          return ['phdthesis']
+        } else {
+          return [type, genre]
+        }
+      }
+    }
+  },
+  {
+    source: TYPE,
+    when: {
+      target: { type: false }
+    },
+    convert: {
+      toSource () { return 'misc' }
+    }
   },
   {
     source: 'howpublished',

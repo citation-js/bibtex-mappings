@@ -228,6 +228,19 @@ const Converters = {
 
 const nonSpec = [
   {
+    source: 'note',
+    target: 'accessed',
+    when: {
+      source: false,
+      target: { note: false }
+    },
+    convert: {
+      toSource (accessed) {
+        return `[Online; accessed ${formatDate(accessed)}]`
+      }
+    }
+  },
+  {
     source: 'numpages',
     target: 'number-of-pages',
     when: {
@@ -259,7 +272,6 @@ const aliases = [
   {
     source: 'annote',
     target: 'annote',
-    convert: Converters.RICH_TEXT,
     when: {
       source: { annotation: false },
       target: false
@@ -286,7 +298,6 @@ const aliases = [
   {
     source: 'journal',
     target: 'container-title',
-    convert: Converters.RICH_TEXT,
     when: {
       source: {
         maintitle: false,
@@ -316,8 +327,7 @@ const biblatex = new util.Translator([
   ...nonSpec,
   {
     source: 'abstract',
-    target: 'abstract',
-    convert: Converters.RICH_TEXT
+    target: 'abstract'
   },
   {
     source: 'urldate',
@@ -326,8 +336,7 @@ const biblatex = new util.Translator([
   },
   {
     source: 'annotation',
-    target: 'annote',
-    convert: Converters.RICH_TEXT
+    target: 'annote'
   },
   {
     source: 'author',
@@ -355,27 +364,45 @@ const biblatex = new util.Translator([
   // multi-volume book.
   //     journaltitle is only used for articles.
   {
-    source: 'maintitle',
+    source: ['maintitle', 'mainsubtitle', 'maintitleaddon'],
     target: 'container-title',
-    convert: Converters.RICH_TEXT,
     when: {
       source: true,
       target: { 'number-of-volumes': true }
-    }
+    },
+    convert: Converters.TITLE
   },
   {
-    source: 'booktitle',
+    source: ['booktitle', 'booksubtitle', 'booktitleaddon'],
     target: 'container-title',
-    convert: Converters.RICH_TEXT,
     when: {
       source: { maintitle: false },
-      target: { 'number-of-volumes': false }
-    }
+      target: {
+        'number-of-volumes': false,
+        type (type) { return !type.startsWith('article') }
+      }
+    },
+    convert: Converters.TITLE
   },
   {
-    source: 'journaltitle',
+    source: ['journaltitle', 'journalsubtitle', 'journaltitleaddon'],
     target: 'container-title',
-    convert: Converters.RICH_TEXT,
+    when: {
+      source: { [TYPE]: 'article' },
+      target: {
+        type: [
+          'article',
+          'article-newspaper',
+          'article-journal',
+          'article-magazine'
+        ]
+      }
+    },
+    convert: Converters.TITLE
+  },
+  {
+    source: 'shortjournal',
+    target: 'container-title-short',
     when: {
       source: { [TYPE]: 'article' },
       target: {
@@ -390,17 +417,11 @@ const biblatex = new util.Translator([
   },
   {
     source: 'shortjournal',
-    target: 'container-title-short',
-    convert: Converters.RICH_TEXT,
+    target: 'journalAbbreviation',
     when: {
-      source: { [TYPE]: 'article' },
+      source: false,
       target: {
-        type: [
-          'article',
-          'article-newspaper',
-          'article-journal',
-          'article-magazine'
-        ]
+        'container-title-short': false
       }
     }
   },
@@ -413,6 +434,8 @@ const biblatex = new util.Translator([
           'book',
           'mvbook',
           'inbook',
+          'bookinbook',
+          'suppbook',
           'collection',
           'mvcollection',
           'incollection',
@@ -460,13 +483,11 @@ const biblatex = new util.Translator([
   },
   {
     source: 'series',
-    target: 'collection-title',
-    convert: Converters.RICH_TEXT
+    target: 'collection-title'
   },
   {
     source: 'shortseries',
-    target: 'collection-title-short',
-    convert: Converters.RICH_TEXT
+    target: 'collection-title-short'
   },
   {
     source: 'doi',
@@ -485,6 +506,10 @@ const biblatex = new util.Translator([
     source: [TYPE, 'entrysubtype', 'type'],
     target: ['type', 'genre'],
     convert: Converters.TYPE
+  {
+    source: TYPE,
+    when: { target: { type: false } },
+    convert: { toSource () { return 'misc' } }
   },
   {
     source: 'eventdate',
@@ -501,11 +526,8 @@ const biblatex = new util.Translator([
   },
   {
     source: LABEL,
-    target: ['id', 'citation-label'],
-    convert: {
-      toTarget (value) { return [value, value] },
-      toSource (id, label) { return id || label }
-    }
+    target: ['id', 'citation-label', 'author', 'issued', 'year-suffix', 'title'],
+    convert: Converters.LABEL
   },
   {
     source: 'isbn',
@@ -524,7 +546,9 @@ const biblatex = new util.Translator([
         [TYPE]: ['article', 'periodical']
       },
       target: {
-        issue (issue) { return typeof issue === 'string' && !issue.match(/\d+/) },
+        issue (issue) {
+          return typeof issue === 'string' && !issue.match(/\d+/)
+        },
         type: ['article', 'article-journal', 'article-newspaper', 'article-magazine']
       }
     }
@@ -537,7 +561,7 @@ const biblatex = new util.Translator([
         [TYPE]: ['article', 'periodical', 'inproceedings']
       },
       target: {
-        issue (issue) { return typeof issue === 'number' || issue.match(/\d+/) },
+        issue (issue) { return issue && (typeof issue === 'number' || issue.match(/\d+/)) },
         type: ['article', 'article-journal', 'article-newspaper', 'article-magazine', 'paper-conference']
       }
     }
@@ -554,6 +578,14 @@ const biblatex = new util.Translator([
     when: {
       source: { date: false },
       target: false
+    }
+  },
+  {
+    source: 'location',
+    target: 'jurisdiction',
+    when: {
+      source: { type: 'patent' },
+      target: { type: 'patent' }
     }
   },
   {
@@ -587,9 +619,14 @@ const biblatex = new util.Translator([
     source: 'number',
     target: 'number',
     when: {
-      source: { [TYPE]: ['patent', 'report', 'techreport'] },
-      target: { type: ['patent', 'report'] }
+      source: { [TYPE]: ['patent', 'report', 'techreport', 'legislation'] },
+      target: { type: ['patent', 'report', 'legislation'] }
     }
+  },
+  {
+    source: 'origdate',
+    target: 'original-date',
+    convert: Converters.DATE
   },
   {
     source: 'origlocation',
@@ -603,8 +640,7 @@ const biblatex = new util.Translator([
   },
   {
     source: 'origtitle',
-    target: 'original-title',
-    convert: Converters.RICH_TEXT
+    target: 'original-title'
   },
   {
     source: ['pages', 'eid'],
@@ -636,7 +672,53 @@ const biblatex = new util.Translator([
     when: {
       source: true,
       target: {
-        type (type) { return type !== 'webpage' }
+        // All except:
+        //   - institution: thesis, report
+        //   - organization: webpage
+        type: [
+          'article',
+          'article-journal',
+          'article-magazine',
+          'article-newspaper',
+          'bill',
+          'book',
+          'broadcast',
+          'chapter',
+          'classic',
+          'collection',
+          'dataset',
+          'document',
+          'entry',
+          'entry-dictionary',
+          'entry-encyclopedia',
+          'event',
+          'figure',
+          'graphic',
+          'hearing',
+          'interview',
+          'legal_case',
+          'legislation',
+          'manuscript',
+          'map',
+          'motion_picture',
+          'musical_score',
+          'pamphlet',
+          'paper-conference',
+          'patent',
+          'performance',
+          'periodical',
+          'personal_communication',
+          'post',
+          'post-weblog',
+          'regulation',
+          'review',
+          'review-book',
+          'software',
+          'song',
+          'speech',
+          'standard',
+          'treaty'
+        ]
       }
     }
   },
@@ -662,7 +744,9 @@ const biblatex = new util.Translator([
         publisher: false,
         organization: false
       },
-      target: false
+      target: {
+        type: ['report', 'thesis']
+      }
     }
   },
   {
@@ -681,19 +765,30 @@ const biblatex = new util.Translator([
     }
   },
   {
+    source: ['pages', 'bookpagination'],
+    target: 'section',
+    when: {
+      source: { bookpagination: 'section' },
+      target: { page: false }
+    },
+    convert: {
+      toTarget (section) { return section },
+      toSource (section) { return [section, 'section'] }
+    }
+  },
+  {
     source: 'pubstate',
     target: 'status',
     convert: Converters.STATUS
   },
   {
     source: 'shorttitle',
-    target: 'title-short',
-    convert: Converters.RICH_TEXT
+    target: 'title-short'
   },
   {
-    source: 'title',
+    source: ['title', 'subtitle', 'titleaddon'],
     target: 'title',
-    convert: Converters.RICH_TEXT
+    convert: Converters.TITLE
   },
   {
     source: 'translator',
@@ -726,11 +821,11 @@ const biblatex = new util.Translator([
   {
     source: 'volumes',
     target: 'number-of-volumes'
-  },
+  }
   // {
-  //   source: 'issuetitle',
+  //   source: ['issuetitle', 'issuesubtitle', 'issuetitleaddon'],
   //   target: 'volume-title',
-  //   convert: Converters.RICH_TEXT
+  //   convert: Converters.TITLE
   // }
 ])
 
