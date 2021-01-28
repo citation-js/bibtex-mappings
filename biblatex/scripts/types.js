@@ -80,5 +80,5 @@ function getRequiredFields (type, resolved) {
   }
 }
 
-fs.writeFileSync(path.join(__dirname, '../output/types.json'), JSON.stringify(output.mappings, null, 2))
-fs.writeFileSync(path.join(__dirname, '../output/required.json'), JSON.stringify(output.requiredFields, null, 2))
+fs.writeFileSync(path.join(__dirname, '../output/types.json'), JSON.stringify(output.mappings, null, 2) + '\n')
+fs.writeFileSync(path.join(__dirname, '../output/required.json'), JSON.stringify(output.requiredFields, null, 2) + '\n')
