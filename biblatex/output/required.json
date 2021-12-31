@@ -107,6 +107,8 @@
     "mvcollection": 4,
     "incollection": 2,
     "dataset": 3,
+    "manual": 3,
+    "misc": 3,
     "online": 5,
     "patent": 6,
     "periodical": 4,
