@@ -557,7 +557,13 @@ const biblatex = new util.Translator([
         issue (issue) {
           return typeof issue === 'string' && !issue.match(/\d+/)
         },
-        type: ['article', 'article-journal', 'article-newspaper', 'article-magazine']
+        type: [
+          'article',
+          'article-journal',
+          'article-newspaper',
+          'article-magazine',
+          'periodical'
+        ]
       }
     }
   },
