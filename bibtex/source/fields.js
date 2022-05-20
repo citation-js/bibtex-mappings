@@ -263,7 +263,7 @@ const bibtex = new util.Translator([
   },
   {
     source: LABEL,
-    target: ['id', 'citation-label', 'author', 'issued', 'year-suffix', 'title'],
+    target: ['id', 'citation-key', 'author', 'issued', 'year-suffix', 'title'],
     convert: Converters.LABEL
   },
   {
@@ -283,7 +283,8 @@ const bibtex = new util.Translator([
           'article-journal',
           'article-newspaper',
           'article-magazine',
-          'paper-conference'
+          'paper-conference',
+          'periodical'
         ]
       }
     }

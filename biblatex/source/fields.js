@@ -506,6 +506,7 @@ const biblatex = new util.Translator([
     source: [TYPE, 'entrysubtype', 'type'],
     target: ['type', 'genre'],
     convert: Converters.TYPE
+  },
   {
     source: TYPE,
     when: { target: { type: false } },
@@ -521,12 +522,19 @@ const biblatex = new util.Translator([
     target: 'event-place'
   },
   {
-    source: 'eventtitle',
-    target: 'event'
+    source: ['eventtitle', 'eventtitleaddon'],
+    target: 'event-title',
+    convert: Converters.EVENT_TITLE
+  },
+  {
+    source: ['eventtitle', 'eventtitleaddon'],
+    target: 'event',
+    convert: Converters.EVENT_TITLE,
+    when: { source: false, target: { 'event-title': false } }
   },
   {
     source: LABEL,
-    target: ['id', 'citation-label', 'author', 'issued', 'year-suffix', 'title'],
+    target: ['id', 'citation-key', 'author', 'issued', 'year-suffix', 'title'],
     convert: Converters.LABEL
   },
   {
@@ -562,7 +570,14 @@ const biblatex = new util.Translator([
       },
       target: {
         issue (issue) { return issue && (typeof issue === 'number' || issue.match(/\d+/)) },
-        type: ['article', 'article-journal', 'article-newspaper', 'article-magazine', 'paper-conference']
+        type: [
+          'article',
+          'article-journal',
+          'article-newspaper',
+          'article-magazine',
+          'paper-conference',
+          'periodical'
+        ]
       }
     }
   },
@@ -651,10 +666,10 @@ const biblatex = new util.Translator([
     source: 'pagetotal',
     target: 'number-of-pages'
   },
-  // {
-  //   source: 'part',
-  //   target: 'part-number'
-  // },
+  {
+    source: 'part',
+    target: 'part-number'
+  },
   {
     source: ['eprint', 'eprinttype'],
     target: 'PMID',
@@ -673,8 +688,8 @@ const biblatex = new util.Translator([
       source: true,
       target: {
         // All except:
-        //   - institution: thesis, report
-        //   - organization: webpage
+        //   - thesis, report: institution
+        //   - webpage: organization
         type: [
           'article',
           'article-journal',
@@ -786,6 +801,11 @@ const biblatex = new util.Translator([
     target: 'title-short'
   },
   {
+    source: 'shorttitle',
+    target: 'shortTitle',
+    when: { source: false, target: { 'title-short': false } }
+  },
+  {
     source: ['title', 'subtitle', 'titleaddon'],
     target: 'title',
     convert: Converters.TITLE
@@ -821,13 +841,13 @@ const biblatex = new util.Translator([
   {
     source: 'volumes',
     target: 'number-of-volumes'
+  },
+  {
+    source: ['issuetitle', 'issuesubtitle', 'issuetitleaddon'],
+    target: 'volume-title',
+    convert: Converters.TITLE
   }
-  // {
-  //   source: ['issuetitle', 'issuesubtitle', 'issuetitleaddon'],
-  //   target: 'volume-title',
-  //   convert: Converters.TITLE
-  // }
-])
+]
 
 function crossref (entry, registry) {
   if (entry.crossref in registry) {
